@@ -9,9 +9,6 @@ char seats[36] = {' ', '1', '2', '3', '4', '5',
                     'C', 'O', 'O', 'O', 'O', 'O',
                     'D', 'O', 'O', 'O', 'O', 'O',
                     'E', 'O', 'O', 'O', 'O', 'O'};
-                       
-    char *menuPointer;
-    menuPointer = seats;
 
 int main(){
     // intro
@@ -19,11 +16,14 @@ int main(){
 
     // print menu
     
+                       
+    char *seatsPointer;
+    seatsPointer = seats;
 
 
         cout << "\n                 ";
         for(int y = 0; y < 6; y++){
-            cout << menu[y] << " ";
+            cout << seats[y] << " ";
         }
 
 
@@ -58,7 +58,7 @@ void menu(void){
 }
 
 void pick(int row, int column){
-    menuPointer[row][column];
+    seats[row][column];
 }
 
 /* PROBLEMS: 
