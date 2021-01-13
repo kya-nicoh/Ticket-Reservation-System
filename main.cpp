@@ -2,7 +2,7 @@
 #include<string.h>
 using namespace std;
 
-void welcome(void), menu(void), enter(void), addToFile(void);
+void welcome(void), menu(void), options(void), enter(void), addToFile(void), reviewTheFile(void), removeFromFile(void), quit(void);
 void choosing(int row, char column);
 
 // try to put this inside a function
@@ -20,19 +20,24 @@ int main(){
     // print menu
     menu();
 
-    // search seat to reserve and how many (loop for how many you want)
-    // check if it is avaiable if yes then continue if not then say
+    // choose between the following
+        // reserve
+            // reserve seat by individual or by group (multiple reservations)
+
+            // search seat to reserve and how many (loop for how many you want)
+            // check if it is avaiable if yes then continue if not then say
+            enter();
+
+        // remove
+        // view
+        // quit
     
-    enter();
-
-    
-    // delete reservation
-
-    // reserve seat by individual or by group
-
     // Do you want to view record and exit or continue reservation
-    // view record and exit. (View record is txt file)
 
+    // delete reservation
+    
+    // view record and exit. (View record is txt file)
+    
     return 0;
 }
 
@@ -56,7 +61,21 @@ void menu(void){
     }
     cout << "\n\n                           Legend: O = Available";
     cout << "\n                                   X = Taken";
+}
 
+void options(void){
+    int option;
+    cout << "1. Reserve a seat\n2. Delete a reservation\n3. Review the reservation\n4. Quit";
+    cin >> option;
+
+    if(option == 1) enter();
+    else if(option == 2) removeFromFile();
+    else if(option == 3) reviewTheFile();
+    else if(option == 4) quit();
+    else cout << "Please enter a valid value";
+}
+
+void reviewTheFile(){
 
 }
 
@@ -85,9 +104,11 @@ void choosing(int row, char column){
     if(upuan[row][newColumn] == 'O'){
         cout << "\n This seat is available!\n Would you like to reserve it?";
         // enter y/n to continue then run addToFile
+        addToFile();
     }
     else if (upuan[row][newColumn] == 'X'){
         cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve something else?";
+        enter();
     }
 }
 
@@ -95,6 +116,13 @@ void addToFile(void){
 
 }
 
+void removeFromFile(){
+
+}
+
+void quit(void){
+    exit(0);
+}
 
 /* PROBLEMS: 
     char array

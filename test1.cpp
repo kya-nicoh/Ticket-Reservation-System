@@ -2,9 +2,22 @@
 #include<string>
 using namespace std;
 
+int main(){
+    int row = 1;
+    char column = 'a';
+    string reservedSeat = to_string(row) + column;
+
+    cout << "Output: " << reservedSeat;
+    return 0;
+}
+/*
+#include<iostream>
+#include<string>
+using namespace std;
+
 void welcome(void), menu(void), options(void), enter(void), reviewTheFile(void), removeFromFile(void), quit(void);
 void choosing(int row, char column);
-void addToFile(string name, string reservedSeat);
+void addToFile(char name, char reservedSeat);
 
 // try to put this inside a function
 char upuan[6][6] = {{' ', 'A', 'B', 'C', 'D', 'E'},
@@ -99,6 +112,8 @@ void enter(){
 void choosing(int row, char column){
     int newColumn;
     char toReserve;
+
+    
     
     if(column == 'A' || column == 'a') newColumn = 1;
     else if(column == 'B' || column == 'b') newColumn = 2;
@@ -108,19 +123,19 @@ void choosing(int row, char column){
 
     // dito i seset kung i rereserve ba or hindi
 
-    // char charRow = row;
-    string reservedSeat = to_string(row) + column;
+    char charRow = row;
+    char reservedSeat = charRow + column;
 
     if(upuan[row][newColumn] == 'O'){
         cout << "\n This seat is available!\n Would you like to reserve it?\n";
         // enter y/n to continue then run addToFile
         cin >> toReserve;
 
-        // 
+        // toReserve=='y'?addToFile():enter();
 
         if(toReserve == 'y'){
             upuan[row][newColumn] = 'X';
-            string name;
+            char name;
             cout << "Enter your name: ";
             cin >> name;
             addToFile(name, reservedSeat);
@@ -129,24 +144,14 @@ void choosing(int row, char column){
     }
     else if (upuan[row][newColumn] == 'X'){
         cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve something else?";
-        cin >> toReserve;
-        if(toReserve == 'y'){
-            cout << "Enter your name: ";
-        }else options();
+        enter();
     }
 }
 
-void addToFile(string name, string reservedSeat){
-    int question;
+void addToFile(char name, char reservedSeat){
     cout << "\nYou opened add to file bitch\n";
     cout << name << reservedSeat;
 
-    // add to txt file
-
-
-    cout << "\n1. Reserve more\n2. Go back to options" << endl;
-    cin >> question;
-    question==1?enter():options();
 }
 
 void removeFromFile(){
