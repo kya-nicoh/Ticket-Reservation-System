@@ -8,11 +8,11 @@ void addToFile(string name, string reservedSeat);
 
 // try to put this inside a function
 char upuan[6][6] = {{' ', 'A', 'B', 'C', 'D', 'E'},
-                       {'1', 'O', 'O', 'O', 'O', 'O'},
-                       {'2', 'O', 'O', 'O', 'O', 'O'},
-                       {'3', 'O', 'O', 'O', 'O', 'O'},
-                       {'4', 'O', 'O', 'O', 'O', 'O'},
-                       {'5', 'O', 'O', 'O', 'O', 'O'}};
+                    {'1', 'O', 'O', 'O', 'O', 'O'},
+                    {'2', 'O', 'O', 'O', 'O', 'O'},
+                    {'3', 'O', 'O', 'O', 'O', 'O'},
+                    {'4', 'O', 'O', 'O', 'O', 'O'},
+                    {'5', 'O', 'O', 'O', 'O', 'O'}};
 
 int main(){
     // intro
@@ -108,15 +108,12 @@ void choosing(int row, char column){
 
     // dito i seset kung i rereserve ba or hindi
 
-    // char charRow = row;
     string reservedSeat = to_string(row) + column;
 
     if(upuan[row][newColumn] == 'O'){
         cout << "\n This seat is available!\n Would you like to reserve it?\n";
         // enter y/n to continue then run addToFile
         cin >> toReserve;
-
-        // 
 
         if(toReserve == 'y'){
             upuan[row][newColumn] = 'X';
@@ -158,6 +155,8 @@ void quit(void){
 }
 
 /* PROBLEMS: 
-    convert int to cahr 
+    view files
+    add to files
+    remove files
     pointers
 */
