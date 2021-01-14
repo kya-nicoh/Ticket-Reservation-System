@@ -139,7 +139,7 @@ void addToFile(string name, string reservedSeat){
     cout << name << reservedSeat;
 
     // add to txt file
-
+    
 
     cout << "\n1. Reserve more\n2. Go back to options" << endl;
     cin >> question;
