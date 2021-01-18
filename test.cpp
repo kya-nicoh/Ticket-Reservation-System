@@ -1,8 +1,9 @@
 #include<iostream>
 #include<string>
+#include<fstream>
 using namespace std;
 
-void welcome(void), menu(void), options(void), enter(void), reviewTheFile(void), removeFromFile(void), quit(void);
+void welcome(void), menu(void), options(void), enter(void), removeFromFile(void), reviewTheFile(void), quit(void);
 void choosing(int row, char column);
 void addToFile(string name, string reservedSeat);
 
@@ -18,7 +19,6 @@ int main(){
     // intro
     welcome();
 
-    // print menu
     do{
         options();
     }
@@ -53,7 +53,7 @@ void menu(void){
     char (*menuPointer)[6];
     menuPointer = upuan;
 
-    cout << "\n\nBelow are the available seats for today: " << endl;
+    cout << "\n\n| Below are the available seats for today: " << endl;
 
     for (int x = 0; x < 6; x++){
         cout << "\n                 ";
@@ -67,7 +67,8 @@ void menu(void){
 
 void options(void){
     int option;
-    cout << "\n1. Reserve a seat\n2. Delete a reservation\n3. Review the reservation\n4. Quit\n" << endl;
+    cout << "\n| 1. Reserve a seat\n| 2. Delete a reservation"
+    <<      "\n| 3. Review the reservation\n| 4. Quit\n" << endl;
     
     cin >> option;
 
@@ -79,20 +80,16 @@ void options(void){
     option = 0;
 }
 
-void reviewTheFile(){
-
-}
-
 void enter(){
     menu();
     int r;
     char c;
-        cout << "\n\nPlease search for a seat number\n Enter your desired row: ";
+        cout << "\n\n| Please search for a seat number\n Enter your desired row: ";
         cin >> r;
         cout << " Enter your desired column: ";
         cin >> c;
 
-    cout << "\nYou entered seat: " << r << c;
+    cout << "\n| You entered seat: " << r << c;
     choosing(r,c);
 }
 
@@ -109,47 +106,80 @@ void choosing(int row, char column){
     if(column == 'E') newColumn = 5;
 
     // dito i seset kung i rereserve ba or hindi
-
     string reservedSeat = to_string(row) + column;
 
     if(upuan[row][newColumn] == 'O'){
-        cout << "\n This seat is available!\n Would you like to reserve it?\n";
+        cout << "\n This seat is available!\n Would you like to reserve it? (y/n)\n";
         // enter y/n to continue then run addToFile
         cin >> toReserve;
 
         if(toReserve == 'y'){
             upuan[row][newColumn] = 'X';
-            // string name;
-            // cout << "Enter your name: ";
-            // cin >> name;
-            // addToFile(name, reservedSeat);
+            string name;
+            cout << " Enter your name: ";
+            cin >> name;
+            addToFile(name, reservedSeat);
         }else enter();
-        
     }
     else if (upuan[row][newColumn] == 'X'){
-        cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve somewhere else?";
+        cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve somewhere else? (y/n)";
         cin >> toReserve;
         if(toReserve == 'y'){
-            cout << "Enter your name: ";
+            enter();
         }else options();
     }
 }
 
 void addToFile(string name, string reservedSeat){
     int question;
-    cout << "\nYou opened add to file bitch\n";
-    cout << name << reservedSeat;
-
     // add to txt file
-    
+    fstream file;
 
-    cout << "\n1. Reserve more\n2. Go back to options" << endl;
+    file.open(name + "'s Reservation", ios::out | ios::app);
+    file << "Seat: " << reservedSeat << endl;
+    file.close();
+    cout << "\n| 1. Reserve more\n| 2. Go back to options" << endl;
     cin >> question;
-    question==1?enter():options();
+    question == 1 ? enter() : options();
 }
 
 void removeFromFile(){
+    string name;
+    cout << "| Please enter the name of the reservation holder" << endl;
+    cin >> name;
 
+    fstream file;
+    file.open(name + "'s Reservation", ios::out);
+    // this deletes everything
+    file << " " << endl;
+    file.close();
+
+    cout << "....Processing\n...Processing Complete\nReservation has been deleted" << endl; 
+
+    char another;
+    cout << "\n Would you like to delete another reservation? (y/n)" << endl;
+    cin >> another;
+    another == 'y' ? removeFromFile() : options();
+}
+
+void reviewTheFile(){
+    string name;
+    cout << "| Please enter the name of the reservation holder" << endl;
+    cin >> name;
+
+    fstream file;
+    file.open(name + "'s Reservation", ios::in);
+    while(!file.eof()){
+        string readText;
+
+        file >> readText;
+        cout << readText << endl;
+    }
+    file.close();
+    char another;
+    cout << "\n Would you like to view another reservation? (y/n)" << endl;
+    cin >> another;
+    another == 'y' ? reviewTheFile() : options();
 }
 
 void quit(void){
@@ -157,8 +187,7 @@ void quit(void){
 }
 
 /* PROBLEMS: 
-    view files
-    add to files
-    remove files
+    deleting by name deletes everything inside
+        possible solution dito is ipapasearch ung user ng seat na gusto tanggalin tas if same dun sa naka write then delete un
     pointers
 */

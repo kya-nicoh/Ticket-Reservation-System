@@ -23,9 +23,7 @@ int main(){
     // writing on a file
     my_file << text << endl;
 
-    
     // reading on a file
-    
     while(!my_file.eof()){
         string readText;
 
@@ -40,7 +38,7 @@ int main(){
     char delete1;
     cout << "delete?" << endl;
     cin >> delete1;
-    delete1 == 'y' ?  change() : exit(0);
+    delete1 == 'y' ? change() : exit(0);
     
     my_file.close();
     return 0;
@@ -52,11 +50,5 @@ void change(void){
     
     char text = ' ';
     my_file << text << endl;
-
-    switch(text){
-        case 'a' || 'A':
-            int newNum = 1;
-            break;
-        
-    }
+    my_file.close();
 }
