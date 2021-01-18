@@ -100,11 +100,13 @@ void choosing(int row, char column){
     int newColumn;
     char toReserve;
     
-    if(column == 'A' || column == 'a') newColumn = 1;
-    else if(column == 'B' || column == 'b') newColumn = 2;
-    if(column == 'C' || column == 'c') newColumn = 3;
-    if(column == 'D' || column == 'd') newColumn = 4;
-    if(column == 'E' || column == 'e') newColumn = 5;
+    column = toupper(column);
+
+    if(column == 'A') newColumn = 1;
+    if(column == 'B') newColumn = 2;
+    if(column == 'C') newColumn = 3;
+    if(column == 'D') newColumn = 4;
+    if(column == 'E') newColumn = 5;
 
     // dito i seset kung i rereserve ba or hindi
 
@@ -117,15 +119,15 @@ void choosing(int row, char column){
 
         if(toReserve == 'y'){
             upuan[row][newColumn] = 'X';
-            string name;
-            cout << "Enter your name: ";
-            cin >> name;
-            addToFile(name, reservedSeat);
+            // string name;
+            // cout << "Enter your name: ";
+            // cin >> name;
+            // addToFile(name, reservedSeat);
         }else enter();
         
     }
     else if (upuan[row][newColumn] == 'X'){
-        cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve something else?";
+        cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve somewhere else?";
         cin >> toReserve;
         if(toReserve == 'y'){
             cout << "Enter your name: ";

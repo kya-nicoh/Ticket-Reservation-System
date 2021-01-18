@@ -14,19 +14,15 @@ int main(){
 
     // add to text file
     fstream my_file;
-    my_file.open("Reserved Database.txt", ios::out);
+    my_file.open("Reserved Database.txt", ios::out | ios::in);
         // make name to uppercases only
     cout << "\nFile created successfully!";
     cout << "\nenter something for the txt file" << endl;
-    char text[100];
+    char text[1000];
     cin.getline(text, sizeof(text));
     // writing on a file
     my_file << text << endl;
 
-    my_file.close();
-
-
-    my_file.open("Reserved Database.txt", ios::in);
     
     // reading on a file
     
@@ -56,4 +52,11 @@ void change(void){
     
     char text = ' ';
     my_file << text << endl;
+
+    switch(text){
+        case 'a' || 'A':
+            int newNum = 1;
+            break;
+        
+    }
 }
