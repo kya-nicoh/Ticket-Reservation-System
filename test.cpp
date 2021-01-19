@@ -1,6 +1,7 @@
 #include<iostream>
 #include<string>
 #include<fstream>
+#include<stdlib.h>
 using namespace std;
 
 void welcome(void), menu(void), options(void), enter(void), removeFromFile(void), reviewTheFile(void), quit(void);
@@ -44,6 +45,7 @@ int main(){
 }
 
 void welcome(void){
+    system("cls");
     char dash[] = "-------------------------------------------------\n";
     cout << "\n\n"<< dash << "          BARRIOS Reservation Services!\n" << dash;
 }
@@ -66,6 +68,8 @@ void menu(void){
 }
 
 void options(void){
+    system("cls");
+    welcome();
     int option;
     cout << "\n| 1. Reserve a seat\n| 2. Delete a reservation"
     <<      "\n| 3. Review the reservation\n| 4. Quit\n" << endl;
@@ -81,6 +85,7 @@ void options(void){
 }
 
 void enter(){
+    system("cls");
     menu();
     int r;
     char c;
@@ -131,12 +136,13 @@ void choosing(int row, char column){
 }
 
 void addToFile(string name, string reservedSeat){
+    system("cls");
     int question;
     // add to txt file
     fstream file;
 
     file.open(name + "'s Reservation", ios::out | ios::app);
-    file << "Seat: " << reservedSeat << endl;
+    file << reservedSeat << endl;
     file.close();
     cout << "\n| 1. Reserve more\n| 2. Go back to options" << endl;
     cin >> question;
@@ -144,6 +150,7 @@ void addToFile(string name, string reservedSeat){
 }
 
 void removeFromFile(){
+    system("cls");
     string name;
     cout << "| Please enter the name of the reservation holder" << endl;
     cin >> name;
@@ -163,9 +170,11 @@ void removeFromFile(){
 }
 
 void reviewTheFile(){
+    system("cls");
     string name;
     cout << "| Please enter the name of the reservation holder" << endl;
     cin >> name;
+    cout << "Seats reserved under the name: " << name << endl;
 
     fstream file;
     file.open(name + "'s Reservation", ios::in);
@@ -183,11 +192,26 @@ void reviewTheFile(){
 }
 
 void quit(void){
+    system("cls");
+    cout << "Thank you for using BARRIOS Reservation Services!\n\n" << endl;
     exit(0);
 }
 
-/* PROBLEMS: 
+/* 
+    PROBLEMS: 
     deleting by name deletes everything inside
         possible solution dito is ipapasearch ung user ng seat na gusto tanggalin tas if same dun sa naka write then delete un
+
+    when deleting the x na nasa array ay dapat maging dot din
+    revamp the delete function to enter which seat you want to delete
     pointers
+
+    1.	Menu: Name with seat number, Search seat if available to reserve, Delete Reservation Record, Reserve seat individual and by group, View Record, Exit.
+    2.	Input Data: Name and seat number
+    3.	Calculated data change status if reserve or not
+    4.	Calculated behavior is checking for continuous seats  e.g. 2 seats, 3 seats, 4 seats, etc.
+    5.	Data for system should be saved on a flat file e.g. text file or txt files.
+    6.	System can accept multiple reservation.
+    7.	Design your own Menu.
+
 */
