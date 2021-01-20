@@ -7,6 +7,7 @@ using namespace std;
 void welcome(void), menu(void), options(void), enter(void), removeFromFile(void), reviewTheFile(void), quit(void);
 void choosing(int row, char column);
 void addToFile(string name, string reservedSeat);
+fstream file;
 
 // try to put this inside a function
 char upuan[6][6] = {{' ', 'A', 'B', 'C', 'D', 'E'},
@@ -17,9 +18,6 @@ char upuan[6][6] = {{' ', 'A', 'B', 'C', 'D', 'E'},
                     {'5', 'O', 'O', 'O', 'O', 'O'}};
 
 int main(){
-    // intro
-    welcome();
-
     do{
         options();
     }
@@ -139,10 +137,8 @@ void addToFile(string name, string reservedSeat){
     system("cls");
     int question;
     // add to txt file
-    fstream file;
-
     file.open(name + "'s Reservation", ios::out | ios::app);
-    file << reservedSeat << endl;
+    file << "Seat: "<< reservedSeat << endl;
     file.close();
     cout << "\n| 1. Reserve more\n| 2. Go back to options" << endl;
     cin >> question;
@@ -155,11 +151,27 @@ void removeFromFile(){
     cout << "| Please enter the name of the reservation holder" << endl;
     cin >> name;
 
-    fstream file;
-    file.open(name + "'s Reservation", ios::out);
-    // this deletes everything
-    file << " " << endl;
-    file.close();
+    // file.open(name + "'s Reservation", ios::out);
+    // // this deletes everything
+    // file << " " << endl;
+    // file.close();
+    
+    cout << " "<< name << "'s Reservation is: " << endl;
+        file.open(name + "'s Reservation", ios::in);
+        while(!file.eof()){
+            string readText;
+
+            file >> readText;
+            cout << readText << endl;
+        }
+        file.close();
+
+    char toDelete;
+    cout << "| Which seat would you like to delete?" << endl;
+
+    // dito eenter kung anong seat tatanggalin then un lang ung dedelete tas magiging '.' na ung sa table ulet.
+
+
 
     cout << "....Processing\n...Processing Complete\nReservation has been deleted" << endl; 
 
@@ -176,14 +188,21 @@ void reviewTheFile(){
     cin >> name;
     cout << "Seats reserved under the name: " << name << endl;
 
-    fstream file;
-    file.open(name + "'s Reservation", ios::in);
-    while(!file.eof()){
-        string readText;
+    file.open(name + "'s Reservation", ios::in | ios::app);
 
-        file >> readText;
-        cout << readText << endl;
-    }
+        // while(!file.eof()){
+        //     string readText;
+        //     file >> readText;
+        //     cout << readText << endl;
+        // }
+
+        string laman;
+        while(file.good()){
+
+            getline(file, laman);
+            cout << laman << endl;
+            
+        }
     file.close();
     char another;
     cout << "\n Would you like to view another reservation? (y/n)" << endl;
@@ -196,7 +215,6 @@ void quit(void){
     cout << "Thank you for using BARRIOS Reservation Services!\n\n" << endl;
     exit(0);
 }
-
 /* 
     PROBLEMS: 
     deleting by name deletes everything inside
@@ -208,10 +226,7 @@ void quit(void){
 
     1.	Menu: Name with seat number, Search seat if available to reserve, Delete Reservation Record, Reserve seat individual and by group, View Record, Exit.
     2.	Input Data: Name and seat number
-    3.	Calculated data change status if reserve or not
     4.	Calculated behavior is checking for continuous seats  e.g. 2 seats, 3 seats, 4 seats, etc.
     5.	Data for system should be saved on a flat file e.g. text file or txt files.
-    6.	System can accept multiple reservation.
     7.	Design your own Menu.
-
 */
