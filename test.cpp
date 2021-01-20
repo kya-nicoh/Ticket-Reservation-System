@@ -4,21 +4,23 @@
 #include<stdlib.h>
 using namespace std;
 
-void welcome(void), menu(void), options(void), search(void), removeFromFile(void), reviewTheFile(void), quit(void);
+void welcome(void), menu(void), options(void), search(void), removeFromFile(void), quit(void);
 void reserve(int row, char column);
 void addToFile(string name, string reservedSeat);
 fstream file;
 
 // try to put this inside a function
-struct mainSeats{
-    const char *upuan[6][6] = {{"   ", "A", "B", "C", "D", "E"},
-                               {"1 |", "O", "O", "O", "O", "O"},
-                               {"2 |", "O", "O", "O", "O", "O"},
-                               {"3 |", "O", "O", "O", "O", "O"},
-                               {"4 |", "O", "O", "O", "O", "O"},
-                               {"5 |", "O", "O", "O", "O", "O"}};
-};
+const char *upuan[6][6] = {{"   ", "A", "B", "C", "D", "E"},
+                           {"1 |", "O", "O", "O", "O", "O"},
+                           {"2 |", "O", "O", "O", "O", "O"},
+                           {"3 |", "O", "O", "O", "O", "O"},
+                           {"4 |", "O", "O", "O", "O", "O"},
+                           {"5 |", "O", "O", "O", "O", "O"}};
+// void seatMain(){
+//     int r, c;
 
+//     return upuan[r][c];
+// }
 int main(){
     do{
         options();
@@ -36,11 +38,10 @@ void welcome(void){
 
 void menu(void){
     cout << "\n\n| Below are the available seats for today: " << endl;
-    struct mainSeats Mainseats;
     for (int x = 0; x < 6; x++){
         cout << "\n                 ";
         for(int y = 0; y < 6; y++){
-            cout << Mainseats.upuan[x][y] << " ";
+            cout << upuan[x][y] << " ";
         }
         if(x==0) continue;
         cout << "| " << x;
@@ -94,22 +95,21 @@ void reserve(int row, char column){
 
     // dito i seset kung i rereserve ba or hindi
     string reservedSeat = to_string(row) + column;
-    struct mainSeats Mainseats;
-    if(Mainseats.upuan[row][newColumn] == "O"){
+ 
+    if(upuan[row][newColumn] == "O"){
         cout << "\n This seat is available!\n Would you like to reserve it? (y/n)\n";
         // enter y/n to continue then run addToFile
         cin >> toReserve;
 
         if(toReserve == 'y'){
-            Mainseats.upuan[row][newColumn] = "X";
-            cout <<"Pumunta naman dito";
+            upuan[row][newColumn] = "X";
             string name;
             cout << " Enter your name: ";
             cin >> name;
             addToFile(name, reservedSeat);
         }else search();
     }
-    else if (Mainseats.upuan[row][newColumn] == "X"){
+    else if (upuan[row][newColumn] == "X"){
         cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve somewhere else? (y/n)";
         cin >> toReserve;
         if(toReserve == 'y'){
@@ -158,42 +158,11 @@ void removeFromFile(){
 
         cout << "....Processing\n...Processing Complete\nReservation has been deleted" << endl; 
     }
-    
-
     char another;
     cout << "\n Main menu (y/n)" << endl;
     cin >> another;
-    another == 'y' ? removeFromFile() : options();
+    another == 'y' ? options() : removeFromFile();
 }
-
-void reviewTheFile(){
-    system("cls");
-    string name;
-    cout << "| Please enter the name of the reservation holder" << endl;
-    cin >> name;
-    cout << "Seats reserved under the name: " << name << endl;
-
-    file.open(name + "'s Reservation", ios::in | ios::app);
-
-        // while(!file.eof()){
-        //     string readText;
-        //     file >> readText;
-        //     cout << readText << endl;
-        // }
-
-        string laman;
-        while(file.good()){
-            getline(file, laman);
-            cout << laman << endl;
-            
-        }
-    file.close();
-    char another;
-    cout << "\n Would you like to view another reservation? (y/n)" << endl;
-    cin >> another;
-    another == 'y' ? reviewTheFile() : options();
-}
-
 void quit(void){
     system("cls");
     cout << "Thank you for using BARRIOS Reservation Services!\n\n" << endl;
@@ -201,7 +170,6 @@ void quit(void){
 }
 /* 
     PROBLEMS: 
-
     struct
 
     1.	Menu: 
