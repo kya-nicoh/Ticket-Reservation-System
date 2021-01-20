@@ -213,6 +213,10 @@ void quit(void){
     PROBLEMS: 
     struct
 
+    # A WAY TO ADD X AMOUNT OF SPACES OR REMOVE X AMOUNT OF SPACES DPENDING ON THE NEEDED SPACE
+    # when exit print the receipt
+    # change spacing of array strings
+
     1.	Menu: 
     Search - seat if available to reserve, 
     Reserve - input your name and the selected seat number, Reserve seat individual and by group (enter names based on the number of seats).
