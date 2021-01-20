@@ -4,9 +4,46 @@
 #include<fstream>
 using namespace std;
 
-void quit(void), change(void);
-// testing out read and write stuff
+void quit(void), change(void), database(void), menuName(void);
+
 int main(){
+    menuName();
+
+    return 0;
+}
+
+void menuName(void){
+    char upuan[6][6] = {{' ', 'A', 'B', 'C', 'D', 'E'},
+                    {'1', 'O', 'O', 'O', 'O', 'O'},
+                    {'2', 'O', 'O', 'O', 'O', 'O'},
+                    {'3', 'O', 'O', 'O', 'O', 'O'},
+                    {'4', 'O', 'O', 'O', 'O', 'O'},
+                    {'5', 'O', 'O', 'O', 'O', 'O'}};
+
+    char name[6] = {};
+
+    for (int x = 0; x < 6; x++){
+        cout << "\n                 ";
+        for(int y = 0; y < 6; y++){
+            cout << upuan[x][y] << " ";
+        }
+    }
+    cout << "\n\n                           Legend: O = Available";
+    cout << "\n                                   X = Taken";
+
+
+}
+
+void change(void){
+    fstream my_file;
+    my_file.open("Reserved Database.txt", ios::out);
+    
+    char text = ' ';
+    my_file << text << endl;
+    my_file.close();
+}
+
+void database(void){
     /* int row = 1;
     char column = 'a';
     string reservedSeat = to_string(row) + column;
@@ -40,15 +77,5 @@ int main(){
     cin >> delete1;
     delete1 == 'y' ? change() : exit(0);
     
-    my_file.close();
-    return 0;
-}
-
-void change(void){
-    fstream my_file;
-    my_file.open("Reserved Database.txt", ios::out);
-    
-    char text = ' ';
-    my_file << text << endl;
     my_file.close();
 }

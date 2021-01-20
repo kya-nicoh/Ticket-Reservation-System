@@ -4,41 +4,27 @@
 #include<stdlib.h>
 using namespace std;
 
-void welcome(void), menu(void), options(void), enter(void), removeFromFile(void), reviewTheFile(void), quit(void);
-void choosing(int row, char column);
+void welcome(void), menu(void), options(void), search(void), removeFromFile(void), reviewTheFile(void), quit(void);
+void reserve(int row, char column);
 void addToFile(string name, string reservedSeat);
 fstream file;
 
 // try to put this inside a function
-char upuan[6][6] = {{' ', 'A', 'B', 'C', 'D', 'E'},
-                    {'1', 'O', 'O', 'O', 'O', 'O'},
-                    {'2', 'O', 'O', 'O', 'O', 'O'},
-                    {'3', 'O', 'O', 'O', 'O', 'O'},
-                    {'4', 'O', 'O', 'O', 'O', 'O'},
-                    {'5', 'O', 'O', 'O', 'O', 'O'}};
+struct mainSeats{
+    const char *upuan[6][6] = {{"   ", "A", "B", "C", "D", "E"},
+                               {"1 |", "O", "O", "O", "O", "O"},
+                               {"2 |", "O", "O", "O", "O", "O"},
+                               {"3 |", "O", "O", "O", "O", "O"},
+                               {"4 |", "O", "O", "O", "O", "O"},
+                               {"5 |", "O", "O", "O", "O", "O"}};
+};
 
 int main(){
     do{
         options();
     }
     while(true);
-    // choose between the following
-        // reserve
-            // reserve seat by individual or by group (multiple reservations)
 
-            // search seat to reserve and how many (loop for how many you want)
-            // check if it is avaiable if yes then continue if not then say
-
-        // remove
-        // view
-        // quit
-    
-    // Do you want to view record and exit or continue reservation
-
-    // delete reservation
-    
-    // view record and exit. (View record is txt file)
-    
     return 0;
 }
 
@@ -49,17 +35,15 @@ void welcome(void){
 }
 
 void menu(void){
-
-    char (*menuPointer)[6];
-    menuPointer = upuan;
-
     cout << "\n\n| Below are the available seats for today: " << endl;
-
+    struct mainSeats Mainseats;
     for (int x = 0; x < 6; x++){
         cout << "\n                 ";
         for(int y = 0; y < 6; y++){
-            cout << menuPointer[x][y] << " ";
+            cout << Mainseats.upuan[x][y] << " ";
         }
+        if(x==0) continue;
+        cout << "| " << x;
     }
     cout << "\n\n                           Legend: O = Available";
     cout << "\n                                   X = Taken";
@@ -69,20 +53,20 @@ void options(void){
     system("cls");
     welcome();
     int option;
-    cout << "\n| 1. Reserve a seat\n| 2. Delete a reservation"
-    <<      "\n| 3. Review the reservation\n| 4. Quit\n" << endl;
+    cout << "\n| 1. Search a seat\n| 2. Reserve a seat"
+    <<      "\n| 3. Cancel the reservation\n| 4. Quit\n" << endl;
     
     cin >> option;
 
-    if(option == 1) enter();
-    else if(option == 2) removeFromFile();
-    else if(option == 3) reviewTheFile();
+    if(option == 1) search();
+    else if(option == 2) search();
+    else if(option == 3) removeFromFile();
     else if(option == 4) quit();
     else cout << "Please enter a valid value";
     option = 0;
 }
 
-void enter(){
+void search(){
     system("cls");
     menu();
     int r;
@@ -93,10 +77,10 @@ void enter(){
         cin >> c;
 
     cout << "\n| You entered seat: " << r << c;
-    choosing(r,c);
+    reserve(r,c);
 }
 
-void choosing(int row, char column){
+void reserve(int row, char column){
     int newColumn;
     char toReserve;
     
@@ -110,25 +94,26 @@ void choosing(int row, char column){
 
     // dito i seset kung i rereserve ba or hindi
     string reservedSeat = to_string(row) + column;
-
-    if(upuan[row][newColumn] == 'O'){
+    struct mainSeats Mainseats;
+    if(Mainseats.upuan[row][newColumn] == "O"){
         cout << "\n This seat is available!\n Would you like to reserve it? (y/n)\n";
         // enter y/n to continue then run addToFile
         cin >> toReserve;
 
         if(toReserve == 'y'){
-            upuan[row][newColumn] = 'X';
+            Mainseats.upuan[row][newColumn] = "X";
+            cout <<"Pumunta naman dito";
             string name;
             cout << " Enter your name: ";
             cin >> name;
             addToFile(name, reservedSeat);
-        }else enter();
+        }else search();
     }
-    else if (upuan[row][newColumn] == 'X'){
+    else if (Mainseats.upuan[row][newColumn] == "X"){
         cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve somewhere else? (y/n)";
         cin >> toReserve;
         if(toReserve == 'y'){
-            enter();
+            search();
         }else options();
     }
 }
@@ -138,11 +123,11 @@ void addToFile(string name, string reservedSeat){
     int question;
     // add to txt file
     file.open(name + "'s Reservation", ios::out | ios::app);
-    file << "Seat: "<< reservedSeat << endl;
+    file << "Customer Name: " << name << "\nSeat: "<< reservedSeat << endl;
     file.close();
     cout << "\n| 1. Reserve more\n| 2. Go back to options" << endl;
     cin >> question;
-    question == 1 ? enter() : options();
+    question == 1 ? search() : options();
 }
 
 void removeFromFile(){
@@ -150,33 +135,33 @@ void removeFromFile(){
     string name;
     cout << "| Please enter the name of the reservation holder" << endl;
     cin >> name;
-
-    // file.open(name + "'s Reservation", ios::out);
-    // // this deletes everything
-    // file << " " << endl;
-    // file.close();
     
-    cout << " "<< name << "'s Reservation is: " << endl;
+    cout << "\n "<< name << "'s Reservation is: " << endl;
         file.open(name + "'s Reservation", ios::in);
-        while(!file.eof()){
-            string readText;
-
-            file >> readText;
-            cout << readText << endl;
+        string laman;
+        while(file.good()){
+            getline(file, laman);
+            cout << "  "<< laman << endl;
+            
         }
         file.close();
 
     char toDelete;
-    cout << "| Which seat would you like to delete?" << endl;
+    cout << "| Would you like to cancel your reservation? (y/n)" << endl;
+    char cancel;
+        cin >> cancel;
+    cancel = toupper(cancel);
+    if(cancel=='Y'){
+        file.open(name + "'s Reservation", ios::out);
+        file << " " << endl;
+        file.close();
 
-    // dito eenter kung anong seat tatanggalin then un lang ung dedelete tas magiging '.' na ung sa table ulet.
-
-
-
-    cout << "....Processing\n...Processing Complete\nReservation has been deleted" << endl; 
+        cout << "....Processing\n...Processing Complete\nReservation has been deleted" << endl; 
+    }
+    
 
     char another;
-    cout << "\n Would you like to delete another reservation? (y/n)" << endl;
+    cout << "\n Main menu (y/n)" << endl;
     cin >> another;
     another == 'y' ? removeFromFile() : options();
 }
@@ -198,7 +183,6 @@ void reviewTheFile(){
 
         string laman;
         while(file.good()){
-
             getline(file, laman);
             cout << laman << endl;
             
@@ -217,16 +201,20 @@ void quit(void){
 }
 /* 
     PROBLEMS: 
-    deleting by name deletes everything inside
-        possible solution dito is ipapasearch ung user ng seat na gusto tanggalin tas if same dun sa naka write then delete un
 
-    when deleting the x na nasa array ay dapat maging dot din
-    revamp the delete function to enter which seat you want to delete
-    pointers
+    struct
 
-    1.	Menu: Name with seat number, Search seat if available to reserve, Delete Reservation Record, Reserve seat individual and by group, View Record, Exit.
+    1.	Menu: 
+    Search - seat if available to reserve, 
+    Reserve - input your name and the selected seat number, Reserve seat individual and by group (enter names based on the number of seats).
+    Cancel/Delete Reservation Record – remove the name and the seat should be available again.
+    View Record - names, seat number
+    Exit.
     2.	Input Data: Name and seat number
+    3.	Calculated data change status if reserve or not
     4.	Calculated behavior is checking for continuous seats  e.g. 2 seats, 3 seats, 4 seats, etc.
     5.	Data for system should be saved on a flat file e.g. text file or txt files.
+    6.	System can accept multiple reservation.
     7.	Design your own Menu.
+
 */
