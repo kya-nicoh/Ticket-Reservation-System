@@ -7,25 +7,29 @@ using namespace std;
 void quit(void), change(void), database(void), menuName(void);
 
 int main(){
+    system("cls");
     menuName();
 
     return 0;
 }
 
 void menuName(void){
-    char upuan[6][6] = {{' ', 'A', 'B', 'C', 'D', 'E'},
-                    {'1', 'O', 'O', 'O', 'O', 'O'},
-                    {'2', 'O', 'O', 'O', 'O', 'O'},
-                    {'3', 'O', 'O', 'O', 'O', 'O'},
-                    {'4', 'O', 'O', 'O', 'O', 'O'},
-                    {'5', 'O', 'O', 'O', 'O', 'O'}};
-
+    struct mainSeat{
+    const char *upuan[6][6] = {{"   ", "A", "B", "C", "D", "E"},
+                               {"1 |", "O", "O", "O", "O", "O"},
+                               {"2 |", "O", "O", "O", "O", "O"},
+                               {"3 |", "O", "O", "O", "O", "O"},
+                               {"4 |", "O", "O", "O", "O", "O"},
+                               {"5 |", "O", "O", "O", "O", "O"}};
+    };
+    mainSeat *ms, s;
+    ms = &s;
     char name[6] = {};
 
     for (int x = 0; x < 6; x++){
         cout << "\n                 ";
         for(int y = 0; y < 6; y++){
-            cout << upuan[x][y] << " ";
+            cout << (*ms).upuan[x][y] << " ";
         }
     }
     cout << "\n\n                           Legend: O = Available";
