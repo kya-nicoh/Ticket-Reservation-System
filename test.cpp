@@ -1,5 +1,7 @@
 #include<iostream>
+#include<cstdio>
 #include<string>
+#include<algorithm>
 #include<fstream>
 #include<stdlib.h>
 using namespace std;
@@ -8,7 +10,6 @@ void welcome(void), menu(void), options(void), search(void), removeFromFile(void
 void reserve(int row, char column, int type);
 void addToFile(string name, string reservedSeat);
 fstream file;
-
 // try to put this inside a function
 struct mainSeat{
     const char *upuan[6][6] = {{"   ", "A", "B", "C", "D", "E"},
@@ -18,7 +19,7 @@ struct mainSeat{
                                {"4 |", "O", "O", "O", "O", "O"},
                                {"5 |", "O", "O", "O", "O", "O"}};
 
-    const char *names[6][6] ={{"   ", "   ", "   ", "   ", "   ", "   "},
+    const char *names[6][6] ={{"|  ", "     ", "     ", "     ", "     ", "     "},
                               {"|  ", "     ", "     ", "     ", "     ", "     "},
                               {"|  ", "     ", "     ", "     ", "     ", "     "},
                               {"|  ", "     ", "     ", "     ", "     ", "     "},
@@ -50,23 +51,22 @@ void menu(void){
     cout << "       |                   SCREEN                   |\n";
     cout << "       ----------------------------------------------\n";
     for (int x = 0; x < 6; x++){
+        cout << "\n            ";
+        for(int y = 0; y < 6; y++){
+            cout << (*ms).names[x][y] << " ";
+        }
+            cout << "  |";
         cout << "\n          ";
         for(int y = 0; y < 6; y++){
             cout << (*ms).upuan[x][y] << "     ";
             if (x==0 && y==5)cout<<"\n            -------------------------------------";
         }
-        if(x==0) continue;
-        cout << "| " << x;
-        cout << "\n            ";
-        for(int y = 0; y < 6; y++){
-            cout << (*ms).names[x][y] << " ";
-        }
-        if(x==0) continue;
-        cout << "  |";
+            if(x==0) continue;
+            cout << "| " << x;
+        
     }
     cout<<"\n            -------------------------------------";
-    cout << "\n\n                           Legend: O = Available";
-    cout << "\n                                   X = Taken";
+    cout << "\n\n            Legend: O = Available        X = Taken";
 }
 
 void options(void){
@@ -126,11 +126,11 @@ void reserve(int row, char column, int type){
                 string name;
                 cout << " Enter your name: ";
                 cin >> name;
-                
+                transform(name.begin(), name.end(), name.begin(), ::toupper);
                 (*ms).names[row][newColumn] = name.c_str();
                 
                 addToFile(name, reservedSeat);
-            }else search();
+            }else options();
         }
         else if ((*ms).upuan[row][newColumn] == "X"){
             cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve somewhere else? (y/n)";
@@ -170,33 +170,41 @@ void removeFromFile(){
     cout << "| Please enter the name of the reservation holder" << endl;
     cin >> name;
     
-    cout << "\n "<< name << "'s Reservation is: " << endl;
+
         file.open(name + "'s Reservation", ios::in);
             string laman;
-            while(file.good()){
-                getline(file, laman);
-                cout << "  "<< laman << endl;
-                
+            if(file.good()){
+                cout << "\n "<< name << "'s Reservation is: " << endl;
+                while(file.good()){
+                    getline(file, laman);
+                    cout << "  "<< laman << endl;
+                }
+            }else if(!file.good()){
+                char blank;
+                cout << "This user has no reservation.\nPlease enter a different name: " << endl;
+                cin >> blank;
+                removeFromFile();
             }
+            
+
         file.close();
-    
+        // please enter how many seats you wish to delete then loop in for loop    
         cout << "Please enter the seat you wish to delete\n Enter your desired row: ";
             cin >> r;
         cout << " Enter your desired column: ";
             cin >> c;
         reserve(r,c,2);
-        
 
     char toDelete;
     cout << "| Would you like to cancel your reservation? (y/n)" << endl;
     char cancel;
         cin >> cancel;
-    cancel = toupper(cancel);
-    if(cancel=='Y'){
+    if(cancel=='y'){
         file.open(name + "'s Reservation", ios::out);
-        file << " " << endl;
+            file << " " << endl;
         file.close();
 
+        // remove(name);
         cout << "\n...Processing\n\n...Processing Complete\n\nReservation has been deleted" << endl; 
     }
     char another;
@@ -209,20 +217,41 @@ void quit(void){
     cout << "Thank you for using BARRIOS Reservation Services!\n\n" << endl;
     exit(0);
 }
+
 /* 
     PROBLEMS: 
     struct
 
+
+    # add color
+        \033[0m
+        \033[31m
+        
+            black - 30
+            red - 31
+            green - 32
+            brown - 33
+            blue - 34
+            magenta - 35
+            cyan - 36
+            lightgray - 37
+
     # A WAY TO ADD X AMOUNT OF SPACES OR REMOVE X AMOUNT OF SPACES DPENDING ON THE NEEDED SPACE
     # when exit print the receipt
     # change spacing of array strings
+    # separate function for search? search function suggests seats
+    # 
+    # please enter how many seats you wish to delete then loop in for loop   
 
+    # loop so that the number of arrays are looping inside the for loop so all the content are in the loop
+    # improve the row and column part
+    # improve the yes/no
     1.	Menu: 
-    Search - seat if available to reserve, 
-    Reserve - input your name and the selected seat number, Reserve seat individual and by group (enter names based on the number of seats).
-    Cancel/Delete Reservation Record – remove the name and the seat should be available again.
-    View Record - names, seat number
-    Exit.
+        Search - seat if available to reserve, 
+        Reserve - input your name and the selected seat number, Reserve seat individual and by group (enter names based on the number of seats).
+        Cancel/Delete Reservation Record – remove the name and the seat should be available again.
+        View Record - names, seat number
+        Exit.
     2.	Input Data: Name and seat number
     3.	Calculated data change status if reserve or not
     4.	Calculated behavior is checking for continuous seats  e.g. 2 seats, 3 seats, 4 seats, etc.
