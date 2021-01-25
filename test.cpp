@@ -6,9 +6,8 @@
 #include<stdlib.h>
 using namespace std;
 
-void welcome(void), menu(void), options(void), reserveActual(void), removeFromFile(void), quit(void);
+void welcome(void), menu(void), options(void), search(void), removeFromFile(void), quit(void);
 void reserve(int row, char column, int type);
-void search(int seatAmount);
 void addToFile(string name, string reservedSeat);
 fstream file;
 // try to put this inside a function
@@ -62,8 +61,9 @@ void menu(void){
             cout << (*ms).upuan[x][y] << "     ";
             if (x==0 && y==5)cout<<"\n            -------------------------------------";
         }
-        if(x==0) continue;
-        cout << "| " << x;
+            if(x==0) continue;
+            cout << "| " << x;
+        
     }
     cout<<"\n            -------------------------------------";
     cout << "\n\n            Legend: O = Available        X = Taken";
@@ -78,45 +78,26 @@ void options(void){
     
     cin >> option;
 
-    if(option == 1) search(0);
-    else if(option == 2) reserveActual();
+    if(option == 1) search();
+    else if(option == 2) search();
     else if(option == 3) removeFromFile();
     else if(option == 4) quit();
     else cout << "Please enter a valid value";
     option = 0;
 }
 
-void reserveActual(){
+void search(){
     system("cls");
-    int seatAmount;
-    cout << "How many seats do you wish to reserve?" << endl;
-    cin >> seatAmount;
-
-    search(seatAmount);
-}
-
-void search(int seatAmount){
-    system("cls");
+    menu();
     int r;
     char c;
-    if(seatAmount == 0){
-        // dito ung i rerecommend ung seats
-        menu();
-        // make random number generator for 1 and 'A'
-        reserve(1,'A',3);
-    }
-    else if(seatAmount > 0){
-        for(int x = 0; x < seatAmount; x++){
-            menu();
-            cout << "\n\n| Please enter the first seat number\n Enter your desired row: ";
-            cin >> r;
-            cout << " Enter your desired column: ";
-            cin >> c;
+        cout << "\n\n| Please search for a seat number\n Enter your desired row: ";
+        cin >> r;
+        cout << " Enter your desired column: ";
+        cin >> c;
 
-            cout << "\n| You entered seat: " << r << c;
-            reserve(r,c,1);
-        }
-    }
+    cout << "\n| You entered seat: " << r << c;
+    reserve(r,c,1);
 }
 
 void reserve(int row, char column, int type){
@@ -132,19 +113,19 @@ void reserve(int row, char column, int type){
     if(column == 'D') newColumn = 4;
     if(column == 'E') newColumn = 5;
 
+    // dito i seset kung i rereserve ba or hindi
     string reservedSeat = to_string(row) + column;
     if(type==1){
-        // change from o to x
          if((*ms).upuan[row][newColumn] == "O"){
         cout << "\n This seat is available!\n Would you like to reserve it? (y/n)\n";
+        // enter y/n to continue then run addToFile
             cin >> toReserve;
             if(toReserve == 'y'){
                 (*ms).upuan[row][newColumn] = "X";
-                // convert string into const char * so array can read it
+                
                 string name;
                 cout << " Enter your name: ";
                 cin >> name;
-                    // ginagawang caps lock lahat
                 transform(name.begin(), name.end(), name.begin(), ::toupper);
                 (*ms).names[row][newColumn] = name.c_str();
                 
@@ -155,53 +136,30 @@ void reserve(int row, char column, int type){
             cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve somewhere else? (y/n)";
             cin >> toReserve;
             if(toReserve == 'y'){
-                return;
+                search();
             }else options();
         }
     }
     else if(type==2){
-        // change from x to o
-        for (int x = 1; x < 6; x++){
-            for(int y = 1; y < 6; y++){
-                if((*ms).upuan[x][y] == "X"){
-                    (*ms).upuan[x][y] = "O";
-                    (*ms).names[x][y] = "     ";
-                }
-            }
+        if((*ms).upuan[row][newColumn] == "X"){
+            (*ms).upuan[row][newColumn] = "O";
+            (*ms).names[row][newColumn] = "     ";
+            return;
         }
-    }
-    else if(type == 3){
-        // recommend some seats
-        int seatLoop;
-        char reservation, reverseColumn;
-        cout << "\nHow many seats do you wish to reserve?" << endl;
-            cin >> seatLoop;
-        for(int x = 0; x < seatLoop; x++){
-            char next;
-            cout << "Recommended seats are: " << endl;
-            if((*ms).upuan[row][newColumn] == "O"){
-                if(newColumn == 1) reverseColumn = 'A';
-                if(newColumn == 2) reverseColumn = 'B';
-                if(newColumn == 3) reverseColumn = 'C';
-                if(newColumn == 4) reverseColumn = 'D';
-                if(newColumn == 5) reverseColumn = 'E';
-
-                cout << row << reverseColumn << endl;
-                newColumn++;
-            }
-        }
-        cout << "\nContinue to reservation? (y/n)" << endl;
-        cin >> reservation;
-        reservation == 'y' ? options() : options();
     }
 }
 
 void addToFile(string name, string reservedSeat){
     system("cls");
+    int question;
     // add to txt file
-    file.open("Reservation Database", ios::out | ios::app);
+    file.open(name + "'s Reservation", ios::out | ios::app);
         file << "Customer Name: " << name << "\nSeat: "<< reservedSeat << endl;
     file.close();
+
+    cout << "\n| 1. Reserve more\n| 2. Go back to options" << endl;
+    cin >> question;
+    question == 1 ? search() : options();
 }
 
 void removeFromFile(){
@@ -211,7 +169,9 @@ void removeFromFile(){
     string name;
     cout << "| Please enter the name of the reservation holder" << endl;
     cin >> name;
-        file.open("Reservation Database", ios::in);
+    
+
+        file.open(name + "'s Reservation", ios::in);
             string laman;
             if(file.good()){
                 cout << "\n "<< name << "'s Reservation is: " << endl;
@@ -225,14 +185,26 @@ void removeFromFile(){
                 cin >> blank;
                 removeFromFile();
             }
+            
+
         file.close();
+        // please enter how many seats you wish to delete then loop in for loop    
+        cout << "Please enter the seat you wish to delete\n Enter your desired row: ";
+            cin >> r;
+        cout << " Enter your desired column: ";
+            cin >> c;
+        reserve(r,c,2);
+
     char toDelete;
     cout << "| Would you like to cancel your reservation? (y/n)" << endl;
     char cancel;
         cin >> cancel;
     if(cancel=='y'){
-        remove("Reservation Database");
-        reserve(1, 'A', 2);
+        file.open(name + "'s Reservation", ios::out);
+            file << " " << endl;
+        file.close();
+
+        // remove(name);
         cout << "\n...Processing\n\n...Processing Complete\n\nReservation has been deleted" << endl; 
     }
     char another;
@@ -242,16 +214,7 @@ void removeFromFile(){
 }
 void quit(void){
     system("cls");
-    string laman;
     cout << "Thank you for using BARRIOS Reservation Services!\n\n" << endl;
-
-    cout << "Here is your receipt\n" << endl;
-        file.open("Reservation Database", ios::in);
-            while(file.good()){
-                getline(file, laman);
-                cout << "  "<< laman << endl;
-            }
-        file.close();
     exit(0);
 }
 
@@ -259,12 +222,11 @@ void quit(void){
     PROBLEMS: 
     struct
 
-    # make random number generator for 1 and 'A'
-    # name not showing in array
+
     # add color
         \033[0m
         \033[31m
-
+        
             black - 30
             red - 31
             green - 32
@@ -274,12 +236,16 @@ void quit(void){
             cyan - 36
             lightgray - 37
 
+    # A WAY TO ADD X AMOUNT OF SPACES OR REMOVE X AMOUNT OF SPACES DPENDING ON THE NEEDED SPACE
     # when exit print the receipt
     # change spacing of array strings
+    # separate function for search? search function suggests seats
+    # 
+    # please enter how many seats you wish to delete then loop in for loop   
 
+    # loop so that the number of arrays are looping inside the for loop so all the content are in the loop
     # improve the row and column part
     # improve the yes/no
-
     1.	Menu: 
         Search - seat if available to reserve, 
         Reserve - input your name and the selected seat number, Reserve seat individual and by group (enter names based on the number of seats).
