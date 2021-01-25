@@ -12,16 +12,16 @@ int main(){
 
     return 0;
 }
-
-void menuName(void){
-    struct mainSeat{
+struct mainSeat{
     const char *upuan[6][6] = {{"   ", "A", "B", "C", "D", "E"},
                                {"1 |", "O", "O", "O", "O", "O"},
                                {"2 |", "O", "O", "O", "O", "O"},
                                {"3 |", "O", "O", "O", "O", "O"},
                                {"4 |", "O", "O", "O", "O", "O"},
                                {"5 |", "O", "O", "O", "O", "O"}};
-    };
+};
+
+void menuName(void){
     mainSeat *ms, s;
     ms = &s;
 
