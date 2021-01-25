@@ -24,7 +24,6 @@ void menuName(void){
     };
     mainSeat *ms, s;
     ms = &s;
-    char name[6] = {};
 
     for (int x = 0; x < 6; x++){
         cout << "\n                 ";
@@ -35,7 +34,17 @@ void menuName(void){
     cout << "\n\n                           Legend: O = Available";
     cout << "\n                                   X = Taken";
 
+    string name;
+    cout << "\nEnter string: ";
+    cin >> name;
+    (*ms).upuan[1][1] = name.c_str();
 
+    for (int x = 0; x < 6; x++){
+        cout << "\n                 ";
+        for(int y = 0; y < 6; y++){
+            cout << (*ms).upuan[x][y] << " ";
+        }
+    }
 }
 
 void change(void){
