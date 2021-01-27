@@ -3,13 +3,13 @@
 #include<string>
 #include<algorithm>
 #include<fstream>
+#include<ctime>
 #include<stdlib.h>
 using namespace std;
 
 void welcome(void), menu(void), options(void), reserveActual(void), removeFromFile(void), quit(void);
-void reserve(int row, char column, int type, int seatAmount);
+void reserve(int type, int seatAmount);
 void search(int seatAmount);
-void addToFile(string name, string reservedSeat, int seatAmount);
 fstream file;
 // try to put this inside a function
 struct mainSeat{
@@ -20,12 +20,12 @@ struct mainSeat{
                                {"4 |", "O", "O", "O", "O", "O"},
                                {"5 |", "O", "O", "O", "O", "O"}};
 
-    const char *names[6][6] ={{"|  ", "     ", "     ", "     ", "     ", "     "},
-                              {"|  ", "     ", "     ", "     ", "     ", "     "},
-                              {"|  ", "     ", "     ", "     ", "     ", "     "},
-                              {"|  ", "     ", "     ", "     ", "     ", "     "},
-                              {"|  ", "     ", "     ", "     ", "     ", "     "},
-                              {"|  ", "     ", "     ", "     ", "     ", "     "}};
+    string names[6][6] ={{"|  ", "     ", "     ", "     ", "     ", "     "},
+                         {"|  ", "     ", "     ", "     ", "     ", "     "},
+                         {"|  ", "     ", "     ", "     ", "     ", "     "},
+                         {"|  ", "     ", "     ", "     ", "     ", "     "},
+                         {"|  ", "     ", "     ", "     ", "     ", "     "},
+                         {"|  ", "     ", "     ", "     ", "     ", "     "}};
 };
 
 mainSeat *ms, s;
@@ -75,9 +75,7 @@ void options(void){
     int option;
     cout << "\n              | 1. Search a seat\n              | 2. Reserve a seat"
     <<      "\n              | 3. Cancel the reservation\n              | 4. Quit\n" << endl;
-    
     cin >> option;
-
     if(option == 1) search(0);
     else if(option == 2) reserveActual();
     else if(option == 3) removeFromFile();
@@ -86,16 +84,11 @@ void options(void){
     option = 0;
 }
 
-int mainSeatAmount = 0;
-int xLoop = 1;
 void reserveActual(){
     system("cls");
     int seatAmount = 0;
     cout << "How many seats do you wish to reserve?" << endl;
     cin >> seatAmount;
-
-    if(xLoop > seatAmount) xLoop = 1;
-
     search(seatAmount);
 }
 
@@ -103,71 +96,63 @@ void search(int seatAmount){
     system("cls");
     int r;
     char c;
-    mainSeatAmount = seatAmount;
-    
     if(seatAmount == 0){
         // dito ung i rerecommend ung seats
         menu();
-        int randomNumber = (rand() % 5) + 1;
-        
-        reserve(randomNumber,'A', 3, 0);
+        reserve(3, 0);
     }
     else if(seatAmount > 0){
-        // need to make this for loop work again
-        // *****still gets random symbols whenever i loop this again
-        // dito ung cause nung random symbols dahil siya sa loop nag loloko ung name strings
-        // try to remove reserve into a void
-        for(xLoop; xLoop <= seatAmount; xLoop++){
-            menu();
-            cout << "\n\n| Please enter the seat "<< xLoop << "\n Enter your desired row: ";
-            cin >> r;
-            cout << " Enter your desired column: ";
-            cin >> c;
-
-            cout << "\n| You entered seat: " << r << c;
-            xLoop++;
-            reserve(r, c, 1, xLoop);
-        }
+        menu();
+        reserve(1, seatAmount);
     }
 }
 
-void reserve(int row, char column, int type, int seatAmount){
+void reserve(int type, int seatAmount){
     ms = &s;
-    int newColumn;
-    char toReserve;
+    int newColumn, row;
+    char toReserve, column;
     
-    column = toupper(column);
-
-    if(column == 'A') newColumn = 1;
-    if(column == 'B') newColumn = 2;
-    if(column == 'C') newColumn = 3;
-    if(column == 'D') newColumn = 4;
-    if(column == 'E') newColumn = 5;
-
-    string reservedSeat = to_string(row) + column;
     if(type==1){
         // change from o to x
-         if((*ms).upuan[row][newColumn] == "O"){
-        cout << "\n This seat is available!\n Would you like to reserve it? (y/n)\n";
-            cin >> toReserve;
-            if(toReserve == 'y'){
-                (*ms).upuan[row][newColumn] = "X";
-                string name;
-                cout << " Enter your name: ";
-                cin >> name;
-                transform(name.begin(), name.end(), name.begin(), ::toupper);
-                
-                (*ms).names[row][newColumn] = name.c_str();
+        for(int x = 1; x <= seatAmount; x++){
+            cout << "\n\n| Please enter seat "<< seatAmount << "\n Enter your desired row: ";
+            cin >> row;
+            cout << " Enter your desired column: ";
+            cin >> column;
+            cout << "\n| You entered seat: " << row << column;
+            column = toupper(column);
 
-                addToFile(name, reservedSeat, mainSeatAmount);
-            }else options();
-        }
-        else if ((*ms).upuan[row][newColumn] == "X"){
-            cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve somewhere else? (y/n)";
-            cin >> toReserve;
-            if(toReserve == 'y'){
-                return;
-            }else options();
+            if(column == 'A') newColumn = 1;
+            if(column == 'B') newColumn = 2;
+            if(column == 'C') newColumn = 3;
+            if(column == 'D') newColumn = 4;
+            if(column == 'E') newColumn = 5;
+
+            string reservedSeat = to_string(row) + column;
+            if((*ms).upuan[row][newColumn] == "O"){
+            cout << "\n This seat is available!\n Would you like to reserve it? (y/n)\n";
+                cin >> toReserve;
+                toReserve = toupper(toReserve);
+                if(toReserve == 'Y' || "YES"){
+                    (*ms).upuan[row][newColumn] = "X";
+                    string name;
+                    cout << " Enter your name: ";
+                    cin >> name;
+                    transform(name.begin(), name.end(), name.begin(), ::toupper);
+                    (*ms).names[row][newColumn] = name;
+
+                    file.open("Reservation Database", ios::out | ios::app);
+                        file << "Customer Name: " << name << "\nSeat: "<< reservedSeat << endl;
+                    file.close();
+                }else options();
+            }
+            else if ((*ms).upuan[row][newColumn] == "X"){
+                cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve somewhere else? (y/n)";
+                toReserve = toupper(toReserve);
+                if(toReserve == 'Y' || "YES"){
+                    return;
+                }else options();
+            }
         }
     }
     else if(type==2){
@@ -183,47 +168,39 @@ void reserve(int row, char column, int type, int seatAmount){
     }
     else if(type == 3){
         // recommend some seats
+        int randomNumber = (rand() % 5) + 1;
         int seatLoop;
         char reservation, reverseColumn;
+        newColumn = 1;
         cout << "\nHow many seats do you wish to reserve?" << endl;
             cin >> seatLoop;
         for(int x = 0; x < seatLoop; x++){
-            char next;
             cout << "Recommended seats are: " << endl;
-            if((*ms).upuan[row][newColumn] == "O"){
-                if(newColumn == 1) reverseColumn = 'A';
-                if(newColumn == 2) reverseColumn = 'B';
-                if(newColumn == 3) reverseColumn = 'C';
-                if(newColumn == 4) reverseColumn = 'D';
-                if(newColumn == 5) reverseColumn = 'E';
-
-                cout << "  " << row << reverseColumn << endl;
+            if(newColumn == 1) reverseColumn = 'A';
+            if(newColumn == 2) reverseColumn = 'B';
+            if(newColumn == 3) reverseColumn = 'C';
+            if(newColumn == 4) reverseColumn = 'D';
+            if(newColumn == 5) reverseColumn = 'E';
+            if((*ms).upuan[randomNumber][newColumn] == "O"){
+                cout << "  " << randomNumber << reverseColumn << endl;
                 newColumn++;
             }
+            else if((*ms).upuan[randomNumber][newColumn] == "X"){
+                newColumn++;
+                cout << "  " << randomNumber << reverseColumn << endl;
+            }
         }
-        cout << "\nContinue to reservation? (y/n)" << endl;
+        cout << "\nContinue to reservation? " << endl;
         cin >> reservation;
-        reservation == 'y' ? options() : options();
+        reservation = toupper(reservation);
+        reservation == 'Y'||"YES" ? options() : search(0);
     }
-}
-
-void addToFile(string name, string reservedSeat, int seatAmount){
-    //system("cls");
-    // add to txt file
-    file.open("Reservation Database", ios::out | ios::app);
-        file << "Customer Name: " << name << "\nSeat: "<< reservedSeat << endl;
-    file.close();
-    
-    int question;
-    cout << "\n| 1. Continue" << endl;
-    cin >> question;
-    question == 1 ? search(seatAmount) : search(seatAmount);
 }
 
 void removeFromFile(){
     system("cls");
     int r;
-    char c;
+    char c, toDelete, cancel, another;
     string name;
     cout << "| Please enter the name of the reservation holder" << endl;
     cin >> name;
@@ -243,27 +220,32 @@ void removeFromFile(){
                 if(blank=='q') options();
             }
         file.close();
-    char toDelete;
-    cout << "| Would you like to cancel your reservation? (y/n)" << endl;
-    char cancel;
+    cout << "| Would you like to cancel your reservation? " << endl;
         cin >> cancel;
-    if(cancel=='y'){
+        cancel = toupper(cancel);
+    if(cancel=='Y'||"YES"){
         remove("Reservation Database");
-        reserve(1, 'A', 2, 0);
+        reserve(2, 0);
         cout << "\n...Processing\n\n...Processing Complete\n\nReservation has been deleted" << endl; 
     }
-    char another;
-    cout << "\n Go back to main menu? (y/n)" << endl;
+    cout << "\n Go back to main menu? " << endl;
         cin >> another;
-    another == 'y' ? options() : removeFromFile();
+        another = toupper(another);
+    another == 'Y'||"YES" ? options() : removeFromFile();
 }
 void quit(void){
     system("cls");
     string laman;
     cout << "Thank you for using BARRIOS Reservation Services!\n\n" << endl;
 
-    cout << "Here is your receipt\n" << endl;
+    time_t tt;
+    struct tm * ti;
+    time (&tt);
+    ti = localtime(&tt);
+
+    cout << "Here is your receipt: \n" << endl;
         file.open("Reservation Database", ios::in);
+            cout << "Reservation time: " << asctime(ti);
             while(file.good()){
                 getline(file, laman);
                 cout << "  "<< laman << endl;
@@ -275,10 +257,9 @@ void quit(void){
 /* 
     PROBLEMS: 
 
-    // 117
-    // need to make this for loop work again
-    // *****still gets random symbols whenever i loop this again
-    // either change it to char or idk
+    # fix spacing inside of arrays
+    # view 
+
     # add color
         \033[0m
         \033[31m
