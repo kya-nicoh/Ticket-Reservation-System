@@ -16,14 +16,10 @@ struct mainSeat{
                               {"|  ", "     ", "     ", "     ", "     ", "     "},
                               {"|  ", "     ", "     ", "     ", "     ", "     "}};
 };
-
 mainSeat *ms, s;
-
 int main(){
     system("cls");
-
     reserved();
-
     menu();
 }
 
@@ -41,13 +37,11 @@ void menu(void){
         cout << "\n";
     }
 }
-
 void reserved(void){
     ms = &s;
-    string name;
+    char name[5];
     menu();
-    
     cout << " Enter your name: ";
-        cin >> name;
-    (*ms).names[1][1] = name.c_str();
+        cin.getline(name, 5);
+    (*ms).names[1][1] = name;
 }

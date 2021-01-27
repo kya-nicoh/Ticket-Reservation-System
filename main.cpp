@@ -7,9 +7,9 @@
 using namespace std;
 
 void welcome(void), menu(void), options(void), reserveActual(void), removeFromFile(void), quit(void);
-void reserve(int row, char column, int type);
+void reserve(int row, char column, int type, int seatAmount);
 void search(int seatAmount);
-void addToFile(string name, string reservedSeat);
+void addToFile(string name, string reservedSeat, int seatAmount);
 fstream file;
 // try to put this inside a function
 struct mainSeat{
@@ -25,7 +25,7 @@ struct mainSeat{
                               {"|  ", "     ", "     ", "     ", "     ", "     "},
                               {"|  ", "     ", "     ", "     ", "     ", "     "},
                               {"|  ", "     ", "     ", "     ", "     ", "     "},
-                              {"|  ", "     ", "     ", "     ", "     ", "     "},};
+                              {"|  ", "     ", "     ", "     ", "     ", "     "}};
 };
 
 mainSeat *ms, s;
@@ -86,11 +86,15 @@ void options(void){
     option = 0;
 }
 
+int mainSeatAmount = 0;
+int xLoop = 1;
 void reserveActual(){
     system("cls");
-    int seatAmount;
+    int seatAmount = 0;
     cout << "How many seats do you wish to reserve?" << endl;
     cin >> seatAmount;
+
+    if(xLoop > seatAmount) xLoop = 1;
 
     search(seatAmount);
 }
@@ -99,27 +103,35 @@ void search(int seatAmount){
     system("cls");
     int r;
     char c;
+    mainSeatAmount = seatAmount;
+    
     if(seatAmount == 0){
         // dito ung i rerecommend ung seats
         menu();
-        // make random number generator for 1 and 'A'
-        reserve(1,'A',3);
+        int randomNumber = (rand() % 5) + 1;
+        
+        reserve(randomNumber,'A', 3, 0);
     }
     else if(seatAmount > 0){
-        for(int x = 0; x < seatAmount; x++){
+        // need to make this for loop work again
+        // *****still gets random symbols whenever i loop this again
+        // dito ung cause nung random symbols dahil siya sa loop nag loloko ung name strings
+        // try to remove reserve into a void
+        for(xLoop; xLoop <= seatAmount; xLoop++){
             menu();
-            cout << "\n\n| Please enter the first seat number\n Enter your desired row: ";
+            cout << "\n\n| Please enter the seat "<< xLoop << "\n Enter your desired row: ";
             cin >> r;
             cout << " Enter your desired column: ";
             cin >> c;
 
             cout << "\n| You entered seat: " << r << c;
-            reserve(r,c,1);
+            xLoop++;
+            reserve(r, c, 1, xLoop);
         }
     }
 }
 
-void reserve(int row, char column, int type){
+void reserve(int row, char column, int type, int seatAmount){
     ms = &s;
     int newColumn;
     char toReserve;
@@ -140,15 +152,14 @@ void reserve(int row, char column, int type){
             cin >> toReserve;
             if(toReserve == 'y'){
                 (*ms).upuan[row][newColumn] = "X";
-                // convert string into const char * so array can read it
                 string name;
                 cout << " Enter your name: ";
                 cin >> name;
-                    // ginagawang caps lock lahat
                 transform(name.begin(), name.end(), name.begin(), ::toupper);
-                (*ms).names[row][newColumn] = name.c_str();
                 
-                addToFile(name, reservedSeat);
+                (*ms).names[row][newColumn] = name.c_str();
+
+                addToFile(name, reservedSeat, mainSeatAmount);
             }else options();
         }
         else if ((*ms).upuan[row][newColumn] == "X"){
@@ -186,7 +197,7 @@ void reserve(int row, char column, int type){
                 if(newColumn == 4) reverseColumn = 'D';
                 if(newColumn == 5) reverseColumn = 'E';
 
-                cout << row << reverseColumn << endl;
+                cout << "  " << row << reverseColumn << endl;
                 newColumn++;
             }
         }
@@ -196,12 +207,17 @@ void reserve(int row, char column, int type){
     }
 }
 
-void addToFile(string name, string reservedSeat){
-    system("cls");
+void addToFile(string name, string reservedSeat, int seatAmount){
+    //system("cls");
     // add to txt file
     file.open("Reservation Database", ios::out | ios::app);
         file << "Customer Name: " << name << "\nSeat: "<< reservedSeat << endl;
     file.close();
+    
+    int question;
+    cout << "\n| 1. Continue" << endl;
+    cin >> question;
+    question == 1 ? search(seatAmount) : search(seatAmount);
 }
 
 void removeFromFile(){
@@ -221,9 +237,10 @@ void removeFromFile(){
                 }
             }else if(!file.good()){
                 char blank;
-                cout << "This user has no reservation.\nPlease enter a different name: " << endl;
+                cout << "This user has no reservation.\nPlease enter a different name or press q to quit:  " << endl;
                 cin >> blank;
                 removeFromFile();
+                if(blank=='q') options();
             }
         file.close();
     char toDelete;
@@ -232,7 +249,7 @@ void removeFromFile(){
         cin >> cancel;
     if(cancel=='y'){
         remove("Reservation Database");
-        reserve(1, 'A', 2);
+        reserve(1, 'A', 2, 0);
         cout << "\n...Processing\n\n...Processing Complete\n\nReservation has been deleted" << endl; 
     }
     char another;
@@ -257,10 +274,11 @@ void quit(void){
 
 /* 
     PROBLEMS: 
-    struct
 
-    # make random number generator for 1 and 'A'
-    # name not showing in array
+    // 117
+    // need to make this for loop work again
+    // *****still gets random symbols whenever i loop this again
+    // either change it to char or idk
     # add color
         \033[0m
         \033[31m
@@ -274,7 +292,6 @@ void quit(void){
             cyan - 36
             lightgray - 37
 
-    # when exit print the receipt
     # change spacing of array strings
 
     # improve the row and column part

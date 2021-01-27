@@ -24,7 +24,7 @@ struct mainSeat{
                               {"|  ", "     ", "     ", "     ", "     ", "     "},
                               {"|  ", "     ", "     ", "     ", "     ", "     "},
                               {"|  ", "     ", "     ", "     ", "     ", "     "},
-                              {"|  ", "     ", "     ", "     ", "     ", "     "},};
+                              {"|  ", "     ", "     ", "     ", "     ", "     "}};
 };
 
 mainSeat *ms, s;
@@ -141,11 +141,39 @@ void reserve(int row, char column, int type){
         }
     }
     else if(type==2){
-        if((*ms).upuan[row][newColumn] == "X"){
-            (*ms).upuan[row][newColumn] = "O";
-            (*ms).names[row][newColumn] = "     ";
-            return;
+        // change from x to o
+        for (int x = 1; x < 6; x++){
+            for(int y = 1; y < 6; y++){
+                if((*ms).upuan[x][y] == "X"){
+                    (*ms).upuan[x][y] = "O";
+                    (*ms).names[x][y] = "     ";
+                }
+            }
         }
+    }
+    else if(type == 3){
+        // recommend some seats
+        int seatLoop;
+        char reservation, reverseColumn;
+        cout << "\nHow many seats do you wish to reserve?" << endl;
+            cin >> seatLoop;
+        for(int x = 0; x < seatLoop; x++){
+            char next;
+            cout << "Recommended seats are: " << endl;
+            if((*ms).upuan[row][newColumn] == "O"){
+                if(newColumn == 1) reverseColumn = 'A';
+                if(newColumn == 2) reverseColumn = 'B';
+                if(newColumn == 3) reverseColumn = 'C';
+                if(newColumn == 4) reverseColumn = 'D';
+                if(newColumn == 5) reverseColumn = 'E';
+
+                cout << row << reverseColumn << endl;
+                newColumn++;
+            }
+        }
+        cout << "\nContinue to reservation? (y/n)" << endl;
+        cin >> reservation;
+        reservation == 'y' ? options() : options();
     }
 }
 
@@ -153,13 +181,13 @@ void addToFile(string name, string reservedSeat){
     system("cls");
     int question;
     // add to txt file
-    file.open(name + "'s Reservation", ios::out | ios::app);
+    file.open("Reservation Database", ios::out | ios::app);
         file << "Customer Name: " << name << "\nSeat: "<< reservedSeat << endl;
     file.close();
 
-    cout << "\n| 1. Reserve more\n| 2. Go back to options" << endl;
+    cout << "\n| 1. Go back to options" << endl;
     cin >> question;
-    question == 1 ? search() : options();
+    question == 1 ? options() : options();
 }
 
 void removeFromFile(){
@@ -169,9 +197,7 @@ void removeFromFile(){
     string name;
     cout << "| Please enter the name of the reservation holder" << endl;
     cin >> name;
-    
-
-        file.open(name + "'s Reservation", ios::in);
+        file.open("Reservation Database", ios::in);
             string laman;
             if(file.good()){
                 cout << "\n "<< name << "'s Reservation is: " << endl;
@@ -185,26 +211,14 @@ void removeFromFile(){
                 cin >> blank;
                 removeFromFile();
             }
-            
-
         file.close();
-        // please enter how many seats you wish to delete then loop in for loop    
-        cout << "Please enter the seat you wish to delete\n Enter your desired row: ";
-            cin >> r;
-        cout << " Enter your desired column: ";
-            cin >> c;
-        reserve(r,c,2);
-
     char toDelete;
     cout << "| Would you like to cancel your reservation? (y/n)" << endl;
     char cancel;
         cin >> cancel;
     if(cancel=='y'){
-        file.open(name + "'s Reservation", ios::out);
-            file << " " << endl;
-        file.close();
-
-        // remove(name);
+        remove("Reservation Database");
+        reserve(1, 'A', 2);
         cout << "\n...Processing\n\n...Processing Complete\n\nReservation has been deleted" << endl; 
     }
     char another;
