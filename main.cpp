@@ -7,9 +7,9 @@
 #include<stdlib.h>
 using namespace std;
 
-void welcome(void), menu(void), options(void), reserveActual(void), removeFromFile(void), view(void), quit(void);
+void welcome(void), menu(void), options(void), reserveActual(void), removeFromFile(void), quit(void);
 void reserve(int type, int seatAmount);
-void search(int seatAmount);
+void search(int seatAmount), view(int version);
 fstream file;
 // try to put this inside a function
 struct mainSeat{
@@ -31,7 +31,6 @@ struct mainSeat{
 mainSeat *ms, s;
 
 int main(){
-
     do{
         options();
     }
@@ -77,19 +76,19 @@ void options(void){
     cout << "\n              | 1. Search a seat\n              | 2. Reserve a seat"
     <<      "\n              | 3. Cancel the reservation\n              | 4. View Reservation\n              | 5. Quit\n" << endl;
     cin >> option;
-    if(option == 1) search(0);
-    else if(option == 2) reserveActual();
-    else if(option == 3) removeFromFile();
-    else if(option == 4) view();
-    else if(option == 5) quit();
-    else cout << "Please enter a valid value";
+        if(option == 1) search(0);
+        else if(option == 2) reserveActual();
+        else if(option == 3) removeFromFile();
+        else if(option == 4) view(1);
+        else if(option == 5) quit();
+        else cout << "Please enter a valid value";
     option = 0;
 }
 
 void reserveActual(){
     system("cls");
     int seatAmount = 0;
-    cout << "How many seats do you wish to reserve?" << endl;
+    cout << "\nHow many seats do you wish to reserve?" << endl;
     cin >> seatAmount;
     search(seatAmount);
 }
@@ -116,9 +115,9 @@ void reserve(int type, int seatAmount){
     if(type==1){
         // change from o to x
         for(int x = 1; x <= seatAmount; x++){
-            cout << "\n\n| Please enter seat "<< x << "\n Enter your desired row: ";
+            cout << "\n\n| Please enter seat #"<< x << "\n Enter your desired row (numbers): ";
             cin >> row;
-            cout << " Enter your desired column: ";
+            cout << " Enter your desired column (letters): ";
             cin >> column;
             cout << "\n| You entered seat: " << row << column;
             column = toupper(column);
@@ -131,7 +130,7 @@ void reserve(int type, int seatAmount){
 
             string reservedSeat = to_string(row) + column;
             if((*ms).upuan[row][newColumn] == "O"){
-            cout << "\n This seat is available!\n Would you like to reserve it? (y/n)\n";
+            cout << "\n This seat is available! Would you like to reserve it?\n   (Press y for yes, and n for no)\n";
                 cin >> toReserve;
                 toReserve = toupper(toReserve);
                 if(toReserve == 'Y'){
@@ -148,11 +147,11 @@ void reserve(int type, int seatAmount){
                 }else options();
             }
             else if ((*ms).upuan[row][newColumn] == "X"){
-                cout << "\n I'm sorry but this seat is already taken.\n Would you like to reserve somewhere else? (y/n)";
+                cout << "\n I'm sorry but this seat is already taken. Would you like to reserve somewhere else?\n   (Press y for yes, and n for no)\n";
+                cin >> toReserve;
                 toReserve = toupper(toReserve);
-                if(toReserve == 'Y'){
-                    return;
-                }else options();
+                if(toReserve == 'Y') reserveActual();
+                else options();
             }
         }
     }
@@ -175,26 +174,31 @@ void reserve(int type, int seatAmount){
         newColumn = 1;
         cout << "\nHow many seats do you wish to reserve?" << endl;
             cin >> seatLoop;
-        if(seatLoop > 5){
-            cout << "You've reached the maximum reservation seat.\n If you wish to reserve more than 5 please contact the manager." << endl;
+        if(seatLoop > 20){
+            cout << "You've reached the maximum reservation seat.\n If you wish to reserve more than 20 please contact the manager." << endl;
         }else{
             for(int x = 0; x < seatLoop; x++){
-            cout << "Recommended seats are: " << endl;
-            if(newColumn == 1) reverseColumn = 'A';
-            if(newColumn == 2) reverseColumn = 'B';
-            if(newColumn == 3) reverseColumn = 'C';
-            if(newColumn == 4) reverseColumn = 'D';
-            if(newColumn == 5) reverseColumn = 'E';
+                if(newColumn == 1) reverseColumn = 'A';
+                if(newColumn == 2) reverseColumn = 'B';
+                if(newColumn == 3) reverseColumn = 'C';
+                if(newColumn == 4) reverseColumn = 'D';
+                if(newColumn == 5) reverseColumn = 'E';
+                
                 if((*ms).upuan[randomNumber][newColumn] == "O"){
+                    cout << "Recommended seats are: " << endl;
                     cout << "  " << randomNumber << reverseColumn << endl;
                     newColumn++;
                 }
                 else if((*ms).upuan[randomNumber][newColumn] == "X"){
                     newColumn++;
-                    cout << "  " << randomNumber << reverseColumn << endl;
+                    --x;
+                }else{
+                    randomNumber++;
+                    newColumn = 1;
+                    x-=1;
                 }
             }
-        cout << "\nContinue to reservation? " << endl;
+        cout << "\nContinue to reservation?\n   (Press y for yes, and n for no)\n" << endl;
         cin >> reservation;
         reservation = toupper(reservation);
         reservation == 'Y' ? options() : search(0);
@@ -214,7 +218,7 @@ void removeFromFile(){
                     getline(file, laman);
                     cout << "  "<< laman << endl;
                 }
-                cout << "| Would you like to cancel your reservation? " << endl;
+                cout << "| Would you like to cancel your reservation?\n   (Press y for yes, and n for no)\n" << endl;
                         cin >> cancel;
                     cancel = toupper(cancel);
                         if(cancel=='Y'){
@@ -222,7 +226,7 @@ void removeFromFile(){
                             reserve(2, 0);
                             cout << "\n...Processing\n\n...Processing Complete\n\nReservation has been deleted" << endl; 
                         }
-                    cout << "\n Go back to main menu? " << endl;
+                    cout << "\n Go back to main menu?\n   (Press y for yes, and n for no)\n" << endl;
                         cin >> another;
                         another = toupper(another);
                     another == 'Y' ? options() : removeFromFile();
@@ -236,7 +240,7 @@ void removeFromFile(){
         file.close();
 }
 
-void view(void){
+void view(int version){
     string laman;
     char another;
     time_t tt;
@@ -252,16 +256,17 @@ void view(void){
                 cout << "  "<< laman << endl;
             }
         file.close();
-    cout << "\n Continue? " << endl;
-        cin >> another;
-        another = toupper(another);
-    another == 'Y' ? options() : options();
-    
+    if (version == 1){
+        cout << "\n Continue?\n   (Press y for yes, and n for no)\n" << endl;
+            cin >> another;
+            another = toupper(another);
+        another == 'Y' ? options() : options();
+    }
 }
 void quit(void){
     system("cls");
     cout << "Thank you for using BARRIOS Reservation Services!\n\n" << endl;
-    view();
+    view(0);
     remove("Reservation Database");
     exit(0);
 }
@@ -285,8 +290,6 @@ void quit(void){
             magenta - 35
             cyan - 36
             lightgray - 37
-
-    # change spacing of array strings
 
     # improve the row and column part
     # improve the yes/no
