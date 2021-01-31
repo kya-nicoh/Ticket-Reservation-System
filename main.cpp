@@ -155,7 +155,7 @@ void reserve(int type, int seatAmount){
             }
         }
     }
-    else if(type==2){
+    else if(type == 2){
         // change from x to o
         for (int x = 1; x < 6; x++){
             for(int y = 1; y < 6; y++){
@@ -188,8 +188,7 @@ void reserve(int type, int seatAmount){
                     cout << "Recommended seats are: " << endl;
                     cout << "  " << randomNumber << reverseColumn << endl;
                     newColumn++;
-                }
-                else if((*ms).upuan[randomNumber][newColumn] == "X"){
+                }else if((*ms).upuan[randomNumber][newColumn] == "X"){
                     newColumn++;
                     --x;
                 }else{
@@ -210,34 +209,34 @@ void removeFromFile(){
     system("cls");
     int r;
     char c, toDelete, cancel, another;
-        file.open("Reservation Database", ios::in);
-            string laman;
-            if(file.good()){
-                cout << "\n "<< "Your current reservation is: " << endl;
-                while(file.good()){
-                    getline(file, laman);
-                    cout << "  "<< laman << endl;
-                }
-                cout << "| Would you like to cancel your reservation?\n   (Press y for yes, and n for no)\n" << endl;
-                        cin >> cancel;
-                    cancel = toupper(cancel);
-                        if(cancel=='Y'){
-                            remove("Reservation Database");
-                            reserve(2, 0);
-                            cout << "\n...Processing\n\n...Processing Complete\n\nReservation has been deleted" << endl; 
-                        }
-                    cout << "\n Go back to main menu?\n   (Press y for yes, and n for no)\n" << endl;
-                        cin >> another;
-                        another = toupper(another);
-                    another == 'Y' ? options() : removeFromFile();
-            }else if(!file.good()){
-                char blank;
-                cout << "You have no reservation yet.\nPlease press q to go back and reserve." << endl;
-                cin >> blank;
-                file.close();
-                options();
+    file.open("Reservation Database", ios::in);
+        string laman;
+        if(file.good()){
+            cout << "\n "<< "Your current reservation is: " << endl;
+            while(file.good()){
+                getline(file, laman);
+                cout << "  "<< laman << endl;
             }
-        file.close();
+            cout << "| Would you like to cancel your reservation?\n   (Press y for yes, and n for no)\n" << endl;
+                    cin >> cancel;
+                cancel = toupper(cancel);
+                    if(cancel=='Y'){
+                        file.close();
+                        remove("Reservation Database");
+                        reserve(2, 0);
+                        cout << "\n...Processing\n\n...Processing Complete\n\nReservation has been deleted" << endl; 
+                    }
+                cout << "\n Go back to main menu?\n   (Press y for yes, and n for no)\n" << endl;
+                    cin >> another;
+                    another = toupper(another);
+                another == 'Y' ? options() : removeFromFile();
+        }else if(!file.good()){
+            char blank;
+            cout << "You have no reservation yet.\nPlease press q to go back and reserve." << endl;
+            cin >> blank;
+            file.close();
+            options();
+        }
 }
 
 void view(int version){
@@ -248,12 +247,14 @@ void view(int version){
     time (&tt);
     ti = localtime(&tt);
         file.open("Reservation Database", ios::in);
-            welcome();
-            cout << "\nHere is your receipt: \n" << endl;
-            cout << "Reservation time: " << asctime(ti);
-            while(file.good()){
-                getline(file, laman);
-                cout << "  "<< laman << endl;
+            if(file.good()){
+                welcome();
+                cout << "\nHere is your receipt: \n" << endl;
+                cout << "Reservation time: " << asctime(ti);
+                while(file.good()){
+                    getline(file, laman);
+                    cout << "  "<< laman << endl;
+                }
             }
         file.close();
     if (version == 1){
@@ -261,39 +262,37 @@ void view(int version){
             cin >> another;
             another = toupper(another);
         another == 'Y' ? options() : options();
+    }else{
+        cout << "\nThank you for using BARRIOS Reservation Services!\n\n" << endl;
+        remove("Reservation Database");
+        exit(0);
     }
 }
 void quit(void){
     system("cls");
-    cout << "Thank you for using BARRIOS Reservation Services!\n\n" << endl;
     view(0);
-    remove("Reservation Database");
-    exit(0);
 }
 
 /* 
     PROBLEMS: 
 
     # fix spacing inside of arrays
-    # fix mga exeptions
-    # fix 179
+    # fix mga exceptions
 
     # add color
         \033[0m
         \033[31m
 
-            black - 30
-            red - 31
-            green - 32
-            brown - 33
-            blue - 34
-            magenta - 35
-            cyan - 36
-            lightgray - 37
+        black - 30
+        red - 31
+        green - 32
+        brown - 33
+        blue - 34
+        magenta - 35
+        cyan - 36
+        lightgray - 37
 
     # improve the row and column part
-    # improve the yes/no
-
     1.	Menu: 
         Search - seat if available to reserve, 
         Reserve - input your name and the selected seat number, Reserve seat individual and by group (enter names based on the number of seats).
