@@ -11,7 +11,7 @@ void welcome(void), menu(void), options(void), reserveActual(void), removeFromFi
 void reserve(int type, int seatAmount);
 void search(int seatAmount), view(int version);
 fstream file;
-// try to put this inside a function
+
 struct mainSeat{
     const char *upuan[6][6] = {{"   ", "A", "B", "C", "D", "E"},
                                {"1 |", "O", "O", "O", "O", "O"},
@@ -98,7 +98,6 @@ void search(int seatAmount){
     int r;
     char c;
     if(seatAmount == 0){
-        // dito ung i rerecommend ung seats
         menu();
         reserve(3, 0);
     }
@@ -113,7 +112,6 @@ void reserve(int type, int seatAmount){
     int newColumn, row;
     char toReserve, column;
     if(type==1){
-        // change from o to x
         for(int x = 1; x <= seatAmount; x++){
             cout << "\n\n| Please enter seat #"<< x << "\n Enter your desired row (numbers): ";
             cin >> row;
@@ -156,7 +154,6 @@ void reserve(int type, int seatAmount){
         }
     }
     else if(type == 2){
-        // change from x to o
         for (int x = 1; x < 6; x++){
             for(int y = 1; y < 6; y++){
                 if((*ms).upuan[x][y] == "X"){
@@ -167,7 +164,6 @@ void reserve(int type, int seatAmount){
         }
     }
     else if(type == 3){
-        // recommend some seats
         int randomNumber = (rand() % 5) + 1;
         int seatLoop;
         char reservation, reverseColumn;
@@ -225,7 +221,7 @@ void removeFromFile(){
                         remove("Reservation Database");
                         reserve(2, 0);
                         cout << "\n...Processing\n\n...Processing Complete\n\nReservation has been deleted" << endl; 
-                    }
+                    }else options();
                 cout << "\n Go back to main menu?\n   (Press y for yes, and n for no)\n" << endl;
                     cin >> another;
                     another = toupper(another);
@@ -242,20 +238,15 @@ void removeFromFile(){
 void view(int version){
     string laman;
     char another;
-    time_t tt;
-    struct tm * ti;
-    time (&tt);
-    ti = localtime(&tt);
         file.open("Reservation Database", ios::in);
             if(file.good()){
                 welcome();
                 cout << "\nHere is your receipt: \n" << endl;
-                cout << "Reservation time: " << asctime(ti);
                 while(file.good()){
                     getline(file, laman);
                     cout << "  "<< laman << endl;
                 }
-            }
+            }else if(!file.good() && version == 1) cout << "You have no reservations yet" << endl;
         file.close();
     if (version == 1){
         cout << "\n Continue?\n   (Press y for yes, and n for no)\n" << endl;
@@ -272,37 +263,3 @@ void quit(void){
     system("cls");
     view(0);
 }
-
-/* 
-    PROBLEMS: 
-
-    # fix spacing inside of arrays
-    # fix mga exceptions
-
-    # add color
-        \033[0m
-        \033[31m
-
-        black - 30
-        red - 31
-        green - 32
-        brown - 33
-        blue - 34
-        magenta - 35
-        cyan - 36
-        lightgray - 37
-
-    # improve the row and column part
-    1.	Menu: 
-        Search - seat if available to reserve, 
-        Reserve - input your name and the selected seat number, Reserve seat individual and by group (enter names based on the number of seats).
-        Cancel/Delete Reservation Record – remove the name and the seat should be available again.
-        View Record - names, seat number
-        Exit.
-    2.	Input Data: Name and seat number
-    3.	Calculated data change status if reserve or not
-    4.	Calculated behavior is checking for continuous seats  e.g. 2 seats, 3 seats, 4 seats, etc.
-    5.	Data for system should be saved on a flat file e.g. text file or txt files.
-    6.	System can accept multiple reservation.
-    7.	Design your own Menu.
-*/
